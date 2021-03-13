@@ -3,18 +3,35 @@ package tetris;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class Board extends JPanel {
+public class Board extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
 	TetrisFrame tf;
 	
+	ArrayList<Block> tPiece = new ArrayList<Block>();
+	
 	public Board() {
 		setupPanel();
 		createTetrisFrame();
+		createTBlock();
+		Timer t = new Timer(300, this);
+		t.start();
+	}
+	
+	private void createTBlock() {
+		tPiece.add(new Block(new Point(165, 20)));
+		tPiece.add(new Block(new Point(145, 20)));
+		tPiece.add(new Block(new Point(185, 20)));
+		tPiece.add(new Block(new Point(165, 0)));
 	}
 	
 	private void setupPanel() {
@@ -32,26 +49,27 @@ public class Board extends JPanel {
 		return new TetrisFrame();
 	}
 	
+	void paintCurrentPiece (Graphics2D g2d) {
+		for (Block block : tPiece) {
+			g2d.setColor(new Color(255, 106, 106));
+			g2d.fillRoundRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), 5, 5);
+			g2d.setColor(Color.BLACK);
+			g2d.drawRoundRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), 5, 5);
+			block.setY(20);
+
+		}
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(new Color(255, 106, 106));
-		g2d.fillRoundRect(165, 30, 20, 20, 5, 5);
-		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(165, 30, 20, 20, 5, 5);
-		g2d.setColor(new Color(255, 106, 106));
-		g2d.fillRoundRect(145, 30, 20, 20, 5, 5);
-		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(145, 30, 20, 20, 5, 5);
-		g2d.setColor(new Color(255, 106, 106));
-		g2d.fillRoundRect(185, 30, 20, 20, 5, 5);
-		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(185, 30, 20, 20, 5, 5);
-		g2d.setColor(new Color(255, 106, 106));
-		g2d.fillRoundRect(165, 10, 20, 20, 5, 5);
-		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(165, 10, 20, 20, 5, 5);
+		paintCurrentPiece(g2d);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		repaint();
 		
 	}
 }
