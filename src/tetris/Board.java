@@ -1,5 +1,6 @@
 package tetris;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -41,15 +42,17 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	}
 
 	void paintCurrentTetromino (Graphics2D g2d) {
+		g2d.setStroke(new BasicStroke(3));
 		if (tetromino != null) {
 			for (Block block : tetromino.getBlocks()) {
 				g2d.setColor(block.getColor());
 				g2d.fillRoundRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), 5, 5);
 				g2d.setColor(Color.BLACK);
-				g2d.drawRoundRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), 5, 5);
+				g2d.drawRoundRect(block.getX() + 1, block.getY() + 1, block.getWidth() - 1, block.getHeight() - 1, 5, 5);
 				block.setY(20);
 			} 			
 		}
+		g2d.setStroke(new BasicStroke(1));
 	}
 
 	@Override
