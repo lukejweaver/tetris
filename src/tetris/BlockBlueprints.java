@@ -2,37 +2,44 @@ package tetris;
 
 public interface BlockBlueprints {
 
-	String TBLOCK = "----/"
+	String TBLOCK = "p"
+				  + "----/"
 			  	  + "-+--/"
 			  	  + "+++-/"
 			  	  + "----";
 
-	String LBLOCK = "----/"
+	String LBLOCK = "o"
+				  + "----/"
 		  	  	  + "-+--/"
 		  	  	  + "-+--/"
 		  	  	  + "-++-";
 	
-	String IBLOCK = "-+--/"
+	String IBLOCK = "b"
+				  + "-+--/"
 		  	      + "-+--/"
 		  	      + "-+--/"
 		  	      + "-+--";
 	
-	String JBLOCK = "----/"
+	String JBLOCK = "d"
+				  + "----/"
 		  	      + "-+--/"
 		  	      + "-+--/"
 		  	      + "++--";
 	
-	String ZBLOCK = "----/"
+	String ZBLOCK = "r"
+				  + "----/"
 		  	      + "-+--/"
 		  	      + "++--/"
 		  	      + "+---";
 	
-	String SBLOCK = "----/"
+	String SBLOCK = "g"
+				  + "----/"
 		  	      + "-+--/"
 		  	      + "-++-/"
 		  	      + "--+-";
 	
-	String OBLOCK = "----/"
+	String OBLOCK = "y"
+				  + "----/"
 		  	      + "----/"
 		  	      + "-++-/"
 		  	      + "-++-";

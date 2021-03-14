@@ -1,15 +1,19 @@
 package tetris;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 
 public class Block {
 	
 	int width = 20, height = 20, x, y;
+	
+	Color blockColor;
 
-	public Block(Point p) {
-		x = p.x;
-		y = p.y;
+	public Block(Point startingPoint, Color color) {
+		x = startingPoint.x;
+		y = startingPoint.y;
+		blockColor = color;
 	}
 	
 	public Rectangle getBounds() {
@@ -38,6 +42,10 @@ public class Block {
 	
 	public void setY(int newY) {
 		y += newY;
+	}
+	
+	public Color getColor() {
+		return blockColor;
 	}
 	
 }
