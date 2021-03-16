@@ -36,8 +36,8 @@ public class Tetromino {
 	}
 	
 	private void createPiece(String blueprint) {
-		int startingX = 145;
-		int x = startingX, y = 0;
+		int startingX = 140;
+		int x = startingX, y = -80;
 		for (int i = 0; i < blueprint.length(); i++){
 		    char blueprintCharacter = blueprint.charAt(i);   
 		    switch (blueprintCharacter) {
