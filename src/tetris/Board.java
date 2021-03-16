@@ -1,6 +1,5 @@
 package tetris;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,19 +14,20 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	private static final long serialVersionUID = 1L;
 
 	TetrisFrame tf;
-
-	Tetromino tetromino;
+	
+	TetrominoCollection tetrominoCollection = new TetrominoCollection();
+	
+	GridBackground gridBackground = new GridBackground();
 		
 	public Board() {
 		setupPanel();
 		createTetrisFrame();
-		tetromino = new Tetromino(TBLOCK);
-		Timer t = new Timer(300, this);
+		Timer t = new Timer(500, this);
 		t.start();
 	}
 
 	private void setupPanel() {
-		setSize(350, 600);
+		setSize(360, 600);
 		setOpaque(false);
 		setVisible(true);
 	}
@@ -35,6 +35,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	private void createTetrisFrame() {
 		tf = newFrame();
 		tf.add(this);
+		tf.add(gridBackground);
 	}
 
 	private TetrisFrame newFrame() {
@@ -42,17 +43,11 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	}
 
 	void paintCurrentTetromino (Graphics2D g2d) {
-		g2d.setStroke(new BasicStroke(3));
-		if (tetromino != null) {
-			for (Block block : tetromino.getBlocks()) {
-				g2d.setColor(block.getColor());
-				g2d.fillRoundRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), 5, 5);
-				g2d.setColor(Color.BLACK);
-				g2d.drawRoundRect(block.getX() + 1, block.getY() + 1, block.getWidth() - 1, block.getHeight() - 1, 5, 5);
-				block.setY(20);
-			} 			
-		}
-		g2d.setStroke(new BasicStroke(1));
+		for (Block block : tetrominoCollection.currentTetromino().getBlocks()) {
+			g2d.setColor(block.getColor());
+			g2d.fill3DRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), true);
+			block.setY(20);
+		} 			
 	}
 
 	@Override
@@ -64,6 +59,6 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		repaint();
+		this.repaint();
 	}
 }
