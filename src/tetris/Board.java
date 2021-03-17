@@ -1,6 +1,5 @@
 package tetris;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -46,8 +45,10 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 		for (Block block : tetrominoCollection.currentTetromino().getBlocks()) {
 			g2d.setColor(block.getColor());
 			g2d.fill3DRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), true);
-			block.setY(20);
+			block.incrementY(20);
 		} 			
+//		g2d.draw(tetrominoCollection.currentTetromino().getBoundingRectangle()); 
+		tetrominoCollection.currentTetromino().moveDown();
 	}
 
 	@Override
@@ -59,6 +60,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		tetrominoCollection.currentTetromino().rotateBlocks(-90);
 		this.repaint();
 	}
 }

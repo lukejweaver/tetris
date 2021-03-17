@@ -2,6 +2,7 @@ package tetris;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,6 +27,8 @@ public class Tetromino {
 	}
 	
 	Color tetrominoColor;
+	
+	int x = 140, y = -80, width = 80, height = 80;
 		
 	public Tetromino(String blueprint) {
 		createPiece(blueprint);
@@ -33,6 +36,65 @@ public class Tetromino {
 	
 	public ArrayList<Block> getBlocks() {
 		return blocks;
+	}
+	
+	public void moveDown() {
+		y += 20;
+	}
+	
+	public Rectangle getBoundingRectangle() {
+		return new Rectangle(x, y, width, height);
+	}
+	
+	public void rotateBlocks(int rotationAngle) {
+		for (Block block : blocks) {
+			Point originalPoint;
+			if (rotationAngle > 0) {
+				originalPoint = new Point(block.getX() + block.getWidth(), block.getY());
+			} else {
+				originalPoint = new Point(block.getX(), block.getY() + block.getHeight());
+			}
+			Point rotatedPoint = rotatePointAroundOrigin(originalPoint, rotationAngle);
+			block.setX(rotatedPoint.x);
+			block.setY(rotatedPoint.y);
+		}
+	}
+	
+	public Point rotatePointAroundOrigin(Point originalPoint, int rotationAngle) {
+		Point aroundOrigin = getOriginPoint(originalPoint);
+		Point rotatedAroundOrigin = rotatePoint(aroundOrigin, rotationAngle);
+		return getOriginalPoint(rotatedAroundOrigin);
+	}
+	
+	private Point getOriginPoint(Point p) {
+		int pointX = p.x;
+		int pointY = p.y;
+		int originX = x + (width/2);
+		int originY = y + (height/2);
+		int aroundOriginX = pointX - originX;
+		int aroundOriginY = originY - pointY;
+		return new Point(aroundOriginX, aroundOriginY);
+	}
+	private Point rotatePoint(Point p, int rotationAngle) {
+		int pointX = p.x;
+		int pointY = p.y;
+        
+        double radianAngle = Math.toRadians(rotationAngle); 
+ 
+        int rotatedX = (int) Math.round(((pointX*Math.cos(radianAngle)) - (pointY*Math.sin(radianAngle))));
+        int rotatedY = (int) Math.round(((pointY*Math.cos(radianAngle)) + (pointX*Math.sin(radianAngle))));
+
+        return new Point(rotatedX, rotatedY);
+	}
+	
+	private Point getOriginalPoint(Point p) {
+		int pointX = p.x;
+		int pointY = p.y;
+		int originX = x + (width/2);
+		int originY = y + (height/2);
+		int originalX = pointX + originX;
+		int originalY = originY - pointY;
+		return new Point(originalX, originalY);
 	}
 	
 	private void createPiece(String blueprint) {
@@ -58,5 +120,4 @@ public class Tetromino {
 		    }
 		}
 	}
-
 }

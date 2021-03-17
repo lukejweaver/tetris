@@ -37,15 +37,22 @@ public class Block {
 	}
 	
 	public void setX(int newX) {
-		x += newX;
+		x = newX;
 	}
 	
 	public void setY(int newY) {
+		y = newY;
+	}
+	
+	public void incrementX(int newX) {
+		x += newX;
+	}
+	
+	public void incrementY(int newY) {
 		y += newY;
 	}
 	
 	public Color getColor() {
 		return blockColor;
 	}
-	
 }
