@@ -44,11 +44,11 @@ public class Block {
 		y = newY;
 	}
 	
-	public void incrementX(int newX) {
+	public void changeX(int newX) {
 		x += newX;
 	}
 	
-	public void incrementY(int newY) {
+	public void changeY(int newY) {
 		y += newY;
 	}
 	

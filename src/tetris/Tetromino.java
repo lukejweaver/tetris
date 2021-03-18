@@ -17,18 +17,18 @@ public class Tetromino {
 	final static HashMap<Character, Color> colors;
 	static {
 		colors = new HashMap<Character, Color>();
-		colors.put('p', Color.MAGENTA);
-		colors.put('o', Color.ORANGE);
+		colors.put('p', new Color(167, 45, 237));
+		colors.put('o', new Color(237, 174, 47));
 		colors.put('b', new Color(66, 197, 245));
-		colors.put('d', Color.BLUE);
-		colors.put('r', Color.RED);
-		colors.put('g', Color.GREEN);
-		colors.put('y', Color.YELLOW);
+		colors.put('d', new Color(47, 57, 237));
+		colors.put('r', new Color(235, 64, 52));
+		colors.put('g', new Color(50, 237, 53));
+		colors.put('y', new Color(225, 237, 50));
 	}
 	
 	Color tetrominoColor;
 	
-	int x = 140, y = -80, width = 80, height = 80;
+	int x = 140, y = -80, width = 80, height = 80, dropSpeed = 20, currentLoop = 0;
 		
 	public Tetromino(String blueprint) {
 		createPiece(blueprint);
@@ -39,7 +39,22 @@ public class Tetromino {
 	}
 	
 	public void moveDown() {
-		y += 20;
+		if (currentLoop == dropSpeed) {
+			y += 20;
+			for (Block block : blocks) {
+				block.changeY(20);
+			}
+			currentLoop = 0;
+		} else {
+			currentLoop++;
+		}
+	}
+	
+	public void changeX(int newX) {
+		x += newX;
+		for (Block block : blocks) {
+			block.changeX(newX);
+		}
 	}
 	
 	public Rectangle getBoundingRectangle() {
