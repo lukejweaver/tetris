@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Tetromino {
 	
@@ -13,6 +14,7 @@ public class Tetromino {
 	final static char NOBLOCK = '-';
 	final static char BLOCK = '+';
 	final static char RETURN = '/';
+	final static char ROTATIONBLOCK= '*';
 	
 	final static HashMap<Character, Color> colors;
 	static {
@@ -26,6 +28,10 @@ public class Tetromino {
 		colors.put('y', new Color(225, 237, 50));
 	}
 	
+	HashMap<Block, Point> projectedBlockPoints = new HashMap<Block, Point>();
+	
+	Block rotationBlock;
+	
 	Color tetrominoColor;
 	
 	int x = 140, y = -80, width = 80, height = 80, dropSpeed = 20, currentLoop = 0;
@@ -38,11 +44,19 @@ public class Tetromino {
 		return blocks;
 	}
 	
+	public boolean shouldTetrominoSet() {
+		return (y + height) == 600;
+	}
+	
 	public void moveDown() {
 		if (currentLoop == dropSpeed) {
-			y += 20;
 			for (Block block : blocks) {
-				block.changeY(20);
+				Point newPoint = new Point(block.getX(), block.getY() + 20);
+				projectedBlockPoints.put(block, newPoint);
+			}
+			if(!isColliding()) {
+				y += 20;
+				moveBlocks();
 			}
 			currentLoop = 0;
 		} else {
@@ -53,11 +67,16 @@ public class Tetromino {
 	public void changeX(int newX) {
 		x += newX;
 		for (Block block : blocks) {
-			block.changeX(newX);
+			Point newPoint = new Point(block.getX() + newX, block.getY());
+			projectedBlockPoints.put(block, newPoint);
+		}
+		if(!isColliding()) {
+			moveBlocks();
 		}
 	}
 	
 	public Rectangle getBoundingRectangle() {
+		recalculateBoundingRectangle();
 		return new Rectangle(x, y, width, height);
 	}
 	
@@ -70,12 +89,36 @@ public class Tetromino {
 				originalPoint = new Point(block.getX(), block.getY() + block.getHeight());
 			}
 			Point rotatedPoint = rotatePointAroundOrigin(originalPoint, rotationAngle);
-			block.setX(rotatedPoint.x);
-			block.setY(rotatedPoint.y);
+			projectedBlockPoints.put(block, rotatedPoint);
+		}
+		recalculateBoundingRectangle();
+		if(!isColliding()) {
+			moveBlocks();
 		}
 	}
 	
-	public Point rotatePointAroundOrigin(Point originalPoint, int rotationAngle) {
+	public boolean isColliding() {
+		boolean isColliding = false;
+		for (Entry<Block, Point> projectedBlockPoint : projectedBlockPoints.entrySet()) {
+			int projectedX = projectedBlockPoint.getValue().x;
+			int projectedY = projectedBlockPoint.getValue().y;
+			if (projectedX >= 360 || projectedX < 0 || projectedY >= 600) {
+				isColliding = true;
+			}
+		}
+		return isColliding;
+	}
+	
+	private void moveBlocks() {
+		for (Entry<Block, Point> projectedBlockPoint : projectedBlockPoints.entrySet()) {
+			int projectedX = projectedBlockPoint.getValue().x;
+			int projectedY = projectedBlockPoint.getValue().y;
+			projectedBlockPoint.getKey().setX(projectedX);
+			projectedBlockPoint.getKey().setY(projectedY);
+		}
+	}
+	
+	private Point rotatePointAroundOrigin(Point originalPoint, int rotationAngle) {
 		Point aroundOrigin = getOriginPoint(originalPoint);
 		Point rotatedAroundOrigin = rotatePoint(aroundOrigin, rotationAngle);
 		return getOriginalPoint(rotatedAroundOrigin);
@@ -84,8 +127,8 @@ public class Tetromino {
 	private Point getOriginPoint(Point p) {
 		int pointX = p.x;
 		int pointY = p.y;
-		int originX = x + (width/2);
-		int originY = y + (height/2);
+		int originX = originPoint().x;
+		int originY = originPoint().y;
 		int aroundOriginX = pointX - originX;
 		int aroundOriginY = originY - pointY;
 		return new Point(aroundOriginX, aroundOriginY);
@@ -105,11 +148,61 @@ public class Tetromino {
 	private Point getOriginalPoint(Point p) {
 		int pointX = p.x;
 		int pointY = p.y;
-		int originX = x + (width/2);
-		int originY = y + (height/2);
+		int originX = originPoint().x;
+		int originY = originPoint().y;
 		int originalX = pointX + originX;
 		int originalY = originY - pointY;
 		return new Point(originalX, originalY);
+	}
+	
+	private void recalculateBoundingRectangle() {
+		int lowestY = 0, highestY = 0, leftMostX = 0, rightMostX = 0, blockWidth = 0, blockHeight = 0;
+		boolean first = true;
+		for (Block block : blocks) {
+			int blockX = block.getX();
+			int blockY = block.getY();
+			
+			if (first) {
+				lowestY = blockY;
+				highestY = blockY;
+				leftMostX = blockX;
+				rightMostX = blockX;
+				blockWidth = block.getWidth();
+				blockHeight = block.getHeight();
+				first = false;
+				continue;
+			}
+
+			if (blockX > rightMostX) {
+				rightMostX = blockX;
+			} else if (blockX < leftMostX) {
+				leftMostX = blockX;
+			}
+			
+			if (blockY > lowestY) {
+				lowestY = blockY;
+			} else if (blockY < highestY) {
+				highestY = blockY;
+			}
+		}
+		
+		y = highestY;
+		x = leftMostX;
+		width = (rightMostX + blockWidth) - leftMostX;
+		height = (lowestY + blockHeight) - highestY;
+	}
+	
+	private Point originPoint() {
+		int originX, originY;
+		if (rotationBlock == null) {
+			originX = x + (width/2);
+			originY = y + (height/2);
+		}
+		else {
+			originX = rotationBlock.getX() + (rotationBlock.getWidth()/2);
+			originY = rotationBlock.getY() + (rotationBlock.getHeight()/2);
+		}
+		return new Point(originX, originY);
 	}
 	
 	private void createPiece(String blueprint) {
@@ -129,6 +222,11 @@ public class Tetromino {
 		    case BLOCK: blocks.add(new Block(new Point(x, y), tetrominoColor));
 		    			x += 20;
 		    			break;
+		    // Create block at x, y and increment x by 20
+		    case ROTATIONBLOCK: rotationBlock = new Block(new Point(x, y), tetrominoColor);
+		    					blocks.add(rotationBlock);
+				    			x += 20;
+				    			break;
 		    // Sets color for the tetromino		    			
 		    default: tetrominoColor = colors.get(blueprintCharacter);
 		    		 break;

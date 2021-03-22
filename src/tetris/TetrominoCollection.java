@@ -20,6 +20,10 @@ public class TetrominoCollection implements BlockBlueprints {
 		return tetrominos.get(0);
 	}
 	
+	public void removeTetromino(Tetromino tetromino) {
+		tetrominos.remove(tetromino);
+	}
+	
 	private void generateTetromino() {
 		Tetromino tetromino = new Tetromino(generateBlockBlueprint());
 		tetrominos.add(tetromino);

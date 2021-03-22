@@ -4,6 +4,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -15,6 +18,8 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 	private static final long serialVersionUID = 1L;
 
+	HashMap<Number, Line> lines = new HashMap<Number, Line>();
+	
 	TetrisFrame tf;
 	
 	TetrominoCollection tetrominoCollection = new TetrominoCollection();
@@ -63,17 +68,41 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 		}
 		g2d.draw(tetrominoCollection.currentTetromino().getBoundingRectangle()); 
 	}
+	
+	void paintLines (Graphics2D g2d) {
+		for (Entry<Number, Line> entry : lines.entrySet()) {
+			for (Block block : entry.getValue().blocks) {
+				g2d.setColor(block.getColor());
+				g2d.fill3DRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), true);
+			}			
+		}
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
 		paintCurrentTetromino(g2d);
+		paintLines(g2d);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		tetrominoCollection.currentTetromino().moveDown();
+		if (tetrominoCollection.currentTetromino().shouldTetrominoSet()) {
+			for (Block block : tetrominoCollection.currentTetromino().blocks) {
+				int lineNumber = (600 - block.getY()) / 20;
+				if (lines.containsKey(lineNumber)) {
+					Line line = lines.get(lineNumber);
+					line.addBlock(block);
+				} else {
+					Line line = new Line();
+					line.addBlock(block);
+					lines.put(lineNumber, line);
+				}
+			}
+			tetrominoCollection.removeTetromino(tetrominoCollection.currentTetromino());
+		}
 		this.repaint();
 	}
 	
