@@ -34,7 +34,7 @@ public class Tetromino {
 	
 	Color tetrominoColor;
 	
-	int x = 140, y = -80, width = 80, height = 80, dropSpeed = 20, currentLoop = 0;
+	int x = 140, y = -80, width = 80, height = 80, dropSpeed = 10, currentLoop = 0;
 		
 	public Tetromino(String blueprint) {
 		createPiece(blueprint);
@@ -44,17 +44,27 @@ public class Tetromino {
 		return blocks;
 	}
 	
-	public boolean shouldTetrominoSet() {
-		return (y + height) == 600;
+	public boolean shouldTetrominoSet(ArrayList<Block> placedBlocks) {
+		boolean isAtBottom = (y + height) == 600;
+		boolean isBlockBelow = false;
+		for (Block block : blocks) {
+			for (Block placedBlock : placedBlocks) {
+				if (block.getX() == placedBlock.getX() && block.getY() + 20 == placedBlock.getY()) {
+					isBlockBelow = true;
+				}
+			}
+		}
+		
+		return isAtBottom || isBlockBelow;
 	}
 	
-	public void moveDown() {
+	public void moveDown(ArrayList<Block> placedBlocks) {
 		if (currentLoop == dropSpeed) {
 			for (Block block : blocks) {
 				Point newPoint = new Point(block.getX(), block.getY() + 20);
 				projectedBlockPoints.put(block, newPoint);
 			}
-			if(!isColliding()) {
+			if(!isColliding(placedBlocks)) {
 				y += 20;
 				moveBlocks();
 			}
@@ -64,13 +74,13 @@ public class Tetromino {
 		}
 	}
 	
-	public void changeX(int newX) {
+	public void changeX(int newX, ArrayList<Block> placedBlocks) {
 		x += newX;
 		for (Block block : blocks) {
 			Point newPoint = new Point(block.getX() + newX, block.getY());
 			projectedBlockPoints.put(block, newPoint);
 		}
-		if(!isColliding()) {
+		if(!isColliding(placedBlocks)) {
 			moveBlocks();
 		}
 	}
@@ -80,7 +90,7 @@ public class Tetromino {
 		return new Rectangle(x, y, width, height);
 	}
 	
-	public void rotateBlocks(int rotationAngle) {
+	public void rotateBlocks(int rotationAngle, ArrayList<Block> placedBlocks) {
 		for (Block block : blocks) {
 			Point originalPoint;
 			if (rotationAngle > 0) {
@@ -92,19 +102,27 @@ public class Tetromino {
 			projectedBlockPoints.put(block, rotatedPoint);
 		}
 		recalculateBoundingRectangle();
-		if(!isColliding()) {
+		if(!isColliding(placedBlocks)) {
 			moveBlocks();
 		}
 	}
 	
-	public boolean isColliding() {
+	public boolean isColliding(ArrayList<Block> placedBlocks) {
 		boolean isColliding = false;
 		for (Entry<Block, Point> projectedBlockPoint : projectedBlockPoints.entrySet()) {
 			int projectedX = projectedBlockPoint.getValue().x;
 			int projectedY = projectedBlockPoint.getValue().y;
 			if (projectedX >= 360 || projectedX < 0 || projectedY >= 600) {
 				isColliding = true;
+				break;
 			}
+			for (Block placedBlock : placedBlocks) {
+				if (projectedX == placedBlock.getX() && projectedY == placedBlock.getY()) {
+					isColliding = true;
+					break;
+				}
+			}
+			if (isColliding) { break; }
 		}
 		return isColliding;
 	}

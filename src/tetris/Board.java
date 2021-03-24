@@ -85,11 +85,20 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 		paintCurrentTetromino(g2d);
 		paintLines(g2d);
 	}
-
+	
+	private ArrayList<Block> getBlocks() {
+		ArrayList<Block> allBlocks = new ArrayList<Block>();
+		for (Line line : lines.values()) {
+			allBlocks.addAll(line.blocks);
+		}
+		return allBlocks;	
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		tetrominoCollection.currentTetromino().moveDown();
-		if (tetrominoCollection.currentTetromino().shouldTetrominoSet()) {
+		tetrominoCollection.currentTetromino().moveDown(getBlocks());
+		if (tetrominoCollection.currentTetromino().shouldTetrominoSet(getBlocks())) {
 			for (Block block : tetrominoCollection.currentTetromino().blocks) {
 				int lineNumber = (600 - block.getY()) / 20;
 				if (lines.containsKey(lineNumber)) {
@@ -115,7 +124,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tetrominoCollection.currentTetromino().changeX(-20);;
+			tetrominoCollection.currentTetromino().changeX(-20, getBlocks());;
 		}
 	}
 	
@@ -128,7 +137,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tetrominoCollection.currentTetromino().changeX(20);;;
+			tetrominoCollection.currentTetromino().changeX(20, getBlocks());
 		}
 	}
 	
@@ -141,7 +150,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tetrominoCollection.currentTetromino().rotateBlocks(-90);;
+			tetrominoCollection.currentTetromino().rotateBlocks(-90, getBlocks());
 		}
 	}
 	
@@ -154,7 +163,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tetrominoCollection.currentTetromino().rotateBlocks(90);;
+			tetrominoCollection.currentTetromino().rotateBlocks(90, getBlocks());
 		}
 	}
 }
