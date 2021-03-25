@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -18,7 +16,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 	private static final long serialVersionUID = 1L;
 
-	HashMap<Number, Line> lines = new HashMap<Number, Line>();
+	ArrayList<Line> lines = new ArrayList<Line>();
 	
 	TetrisFrame tf;
 	
@@ -70,8 +68,8 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	}
 	
 	void paintLines (Graphics2D g2d) {
-		for (Entry<Number, Line> entry : lines.entrySet()) {
-			for (Block block : entry.getValue().blocks) {
+		for (Line line : lines) {
+			for (Block block : line.blocks) {
 				g2d.setColor(block.getColor());
 				g2d.fill3DRect(block.getX(), block.getY(), block.getWidth(), block.getHeight(), true);
 			}			
@@ -88,29 +86,67 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	
 	private ArrayList<Block> getBlocks() {
 		ArrayList<Block> allBlocks = new ArrayList<Block>();
-		for (Line line : lines.values()) {
+		for (Line line : lines) {
 			allBlocks.addAll(line.blocks);
 		}
 		return allBlocks;	
 	}
 	
+	private void checkLineStatuses() {
+		ArrayList<Line> linesToRemove = new ArrayList<Line>();
+		for (Line line : lines) {
+			if (line.isLineFull()) {
+				linesToRemove.add(line);
+			}
+		}
+		lines.removeAll(linesToRemove);
+		
+		ArrayList<Line> linesToMoveDown = new ArrayList<Line>();
+		for (Line line : linesToRemove) {
+			linesToMoveDown.addAll(linesAbove(line.getY()));
+		}
+		
+		linesToMoveDown.forEach((n) -> n.moveDown());
+	}
+	
+	private ArrayList<Line> linesAbove(int yCoord) {
+		ArrayList<Line> linesToMoveDown = new ArrayList<Line>();
+		for (Line line : lines) {
+			if (line.getY() < yCoord) {
+				linesToMoveDown.add(line);
+			}
+		}
+		
+		return linesToMoveDown;
+	}
+	
+	private Line lineAt(int yCoord) {
+		Line lineAtY = null;
+		for (Line line : lines) {
+			if (line.getY() == yCoord) {				
+				lineAtY = line;
+				break;
+			}
+		}
+		
+		if (lineAtY == null) {
+			lineAtY = new Line(yCoord);
+			lines.add(lineAtY);
+		}
+		
+		return lineAtY;
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		tetrominoCollection.currentTetromino().moveDown(getBlocks());
 		if (tetrominoCollection.currentTetromino().shouldTetrominoSet(getBlocks())) {
 			for (Block block : tetrominoCollection.currentTetromino().blocks) {
-				int lineNumber = (600 - block.getY()) / 20;
-				if (lines.containsKey(lineNumber)) {
-					Line line = lines.get(lineNumber);
-					line.addBlock(block);
-				} else {
-					Line line = new Line();
-					line.addBlock(block);
-					lines.put(lineNumber, line);
-				}
+				Line line = lineAt(block.getY());
+				line.addBlock(block);
 			}
 			tetrominoCollection.removeTetromino(tetrominoCollection.currentTetromino());
+			checkLineStatuses();
 		}
 		this.repaint();
 	}
