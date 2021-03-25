@@ -15,6 +15,9 @@ public interface BlockBlueprints {
 			add(ZBLOCK);
 			add(SBLOCK);
 			add(OBLOCK);
+//			add(ABLOCK);
+//			add(CBLOCK);
+//			add(FBLOCK);
 		}
 	}; 
 
@@ -59,4 +62,22 @@ public interface BlockBlueprints {
 		  	      + "-++-/"
 		  	      + "-++-/"
 		  	      + "----";
+	
+	String CBLOCK = "p"
+				  + "---+-/"
+		  	      + "--+--/"
+		  	      + "--*--/"
+		  	      + "-+++-";
+	
+	String FBLOCK = "y"
+				  + "+--+/"
+		  	      + "-++-/"
+		  	      + "-++-/"
+		  	      + "+--+";
+	
+	String ABLOCK = "y"
+				  + "----/"
+		  	      + "-++-/"
+		  	      + "+--+/"
+		  	      + "-++-";
 }
