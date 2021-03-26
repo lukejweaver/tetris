@@ -28,9 +28,9 @@ public class GridBackground extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setColor(Color.GRAY);
-		for (int y = 0; y < 600/20; y++) {
-			for (int x = 0; x < 360/20; x++) {
-				g2d.drawRect(x*20, y*20, 20, 20);			
+		for (int y = 0; y < Board.PANELHEIGHT/Block.BLOCKHEIGHT; y++) {
+			for (int x = 0; x < Board.PANELWIDTH/Block.BLOCKWIDTH; x++) {
+				g2d.drawRect(x*Block.BLOCKWIDTH, y*Block.BLOCKHEIGHT, Block.BLOCKWIDTH, Block.BLOCKHEIGHT);			
 			}
 		}
 	}

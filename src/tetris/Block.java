@@ -6,9 +6,13 @@ import java.awt.Rectangle;
 
 public class Block {
 	
-	int width = 20, height = 20, x, y;
 	
 	Color blockColor;
+	
+	static final int BLOCKHEIGHT = 20;
+	static final int BLOCKWIDTH = 20;
+	
+	int x, y;
 
 	public Block(Point startingPoint, Color color) {
 		x = startingPoint.x;
@@ -17,15 +21,15 @@ public class Block {
 	}
 	
 	public Rectangle getBounds() {
-		return new Rectangle(width, height);
+		return new Rectangle(BLOCKWIDTH, BLOCKHEIGHT);
 	}
 	
 	public int getWidth() {
-		return width;
+		return BLOCKWIDTH;
 	}
 	
 	public int getHeight() {
-		return height;
+		return BLOCKHEIGHT;
 	}
 	
 	public int getX() {

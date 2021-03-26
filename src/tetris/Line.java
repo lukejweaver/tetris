@@ -17,7 +17,7 @@ public class Line {
 	}
 	
 	public boolean isLineFull() {
-		int maxBlockNum = 360/20;
+		int maxBlockNum = Board.PANELWIDTH/Block.BLOCKWIDTH;
 		return blocks.size() == maxBlockNum;
 	}
 	
@@ -26,10 +26,9 @@ public class Line {
 	}
 	
 	public void moveDown() {
-		y += 20;
-		System.out.println(blocks.size());
+		y += Block.BLOCKHEIGHT;
 		for (Block block : blocks) {
-			block.changeY(20);
+			block.changeY(Block.BLOCKHEIGHT);
 		}
 	}
 	

@@ -45,11 +45,11 @@ public class Tetromino {
 	}
 	
 	public boolean shouldTetrominoSet(ArrayList<Block> placedBlocks) {
-		boolean isAtBottom = (y + height) == 600;
+		boolean isAtBottom = (y + height) == Board.PANELHEIGHT;
 		boolean isBlockBelow = false;
 		for (Block block : blocks) {
 			for (Block placedBlock : placedBlocks) {
-				if (block.getX() == placedBlock.getX() && block.getY() + 20 == placedBlock.getY()) {
+				if (block.getX() == placedBlock.getX() && block.getY() + block.getHeight() == placedBlock.getY()) {
 					isBlockBelow = true;
 				}
 			}
@@ -61,11 +61,11 @@ public class Tetromino {
 	public void moveDown(ArrayList<Block> placedBlocks) {
 		if (currentLoop == dropSpeed) {
 			for (Block block : blocks) {
-				Point newPoint = new Point(block.getX(), block.getY() + 20);
+				Point newPoint = new Point(block.getX(), block.getY() + block.getHeight());
 				projectedBlockPoints.put(block, newPoint);
 			}
 			if(!isColliding(placedBlocks)) {
-				y += 20;
+				y += Block.BLOCKHEIGHT;
 				moveBlocks();
 			}
 			currentLoop = 0;
@@ -112,7 +112,7 @@ public class Tetromino {
 		for (Entry<Block, Point> projectedBlockPoint : projectedBlockPoints.entrySet()) {
 			int projectedX = projectedBlockPoint.getValue().x;
 			int projectedY = projectedBlockPoint.getValue().y;
-			if (projectedX >= 360 || projectedX < 0 || projectedY >= 600) {
+			if (projectedX >= Board.PANELWIDTH || projectedX < 0 || projectedY >= Board.PANELHEIGHT) {
 				isColliding = true;
 				break;
 			}
@@ -224,26 +224,26 @@ public class Tetromino {
 	}
 	
 	private void createPiece(String blueprint) {
-		int startingX = 140;
+		int startingX = (int) (Math.round((Board.PANELWIDTH/2)/Block.BLOCKWIDTH) * Block.BLOCKWIDTH - (Block.BLOCKWIDTH*2));
 		int x = startingX, y = -80;
 		for (int i = 0; i < blueprint.length(); i++){
 		    char blueprintCharacter = blueprint.charAt(i);   
 		    switch (blueprintCharacter) {
 		    // Increment x by 20		    
-		    case NOBLOCK: x += 20;
+		    case NOBLOCK: x += Block.BLOCKWIDTH;
 		    			  break;
 		    // Reset x increment y by 20		    
 		    case RETURN: x = startingX;
-		    			 y += 20;
+		    			 y += Block.BLOCKHEIGHT;
 		    			 break;
 		    // Create block at x, y and increment x by 20
 		    case BLOCK: blocks.add(new Block(new Point(x, y), tetrominoColor));
-		    			x += 20;
+		    			x += Block.BLOCKWIDTH;
 		    			break;
 		    // Create block at x, y and increment x by 20
 		    case ROTATIONBLOCK: rotationBlock = new Block(new Point(x, y), tetrominoColor);
 		    					blocks.add(rotationBlock);
-				    			x += 20;
+				    			x += Block.BLOCKWIDTH;
 				    			break;
 		    // Sets color for the tetromino		    			
 		    default: tetrominoColor = colors.get(blueprintCharacter);

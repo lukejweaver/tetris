@@ -23,6 +23,9 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	TetrominoCollection tetrominoCollection = new TetrominoCollection();
 	
 	GridBackground gridBackground = new GridBackground();
+	
+	static final int PANELWIDTH = 360;
+	static final int PANELHEIGHT = 600;
 		
 	public Board() {
 		setupPanel();
@@ -33,7 +36,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	}
 
 	private void setupPanel() {
-		setSize(360, 600);
+		setSize(PANELWIDTH, PANELHEIGHT);
 		setOpaque(false);
 		setVisible(true);
 	}
@@ -160,7 +163,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tetrominoCollection.currentTetromino().changeX(-20, getBlocks());;
+			tetrominoCollection.currentTetromino().changeX(-Block.BLOCKWIDTH, getBlocks());;
 		}
 	}
 	
@@ -173,7 +176,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			tetrominoCollection.currentTetromino().changeX(20, getBlocks());
+			tetrominoCollection.currentTetromino().changeX(Block.BLOCKWIDTH, getBlocks());
 		}
 	}
 	
