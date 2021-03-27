@@ -1,5 +1,7 @@
 package tetris;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
@@ -24,6 +27,12 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	
 	GridBackground gridBackground = new GridBackground();
 	
+	JLabel scoreLabel = new JLabel();	
+	
+	int intScore = 0;
+	
+	String scoreString = "Score: ";
+	
 	static final int PANELWIDTH = 360;
 	static final int PANELHEIGHT = 600;
 		
@@ -38,6 +47,12 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 	private void setupPanel() {
 		setSize(PANELWIDTH, PANELHEIGHT);
 		setOpaque(false);
+	    setLayout(new BorderLayout()); 
+	    scoreLabel.setHorizontalAlignment(JLabel.RIGHT);
+	    scoreLabel.setVerticalAlignment(JLabel.TOP);
+	    scoreLabel.setText(scoreString + intScore);
+	    scoreLabel.setForeground(Color.WHITE);
+		add(scoreLabel);
 		setVisible(true);
 	}
 
@@ -45,6 +60,7 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 		tf = newFrame();
 		tf.add(this);
 		tf.add(gridBackground);
+	    tf.setVisible(true);
 	}
 
 	private TetrisFrame newFrame() {
@@ -95,6 +111,11 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 		return allBlocks;	
 	}
 	
+	private void updateScore(int linesCleared) {
+		intScore += linesCleared;
+		scoreLabel.setText(scoreString + intScore);
+	}
+	
 	private void checkLineStatuses() {
 		ArrayList<Line> linesToRemove = new ArrayList<Line>();
 		for (Line line : lines) {
@@ -103,6 +124,8 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 			}
 		}
 		lines.removeAll(linesToRemove);
+
+		updateScore(linesToRemove.size());
 		
 		ArrayList<Line> linesToMoveDown = new ArrayList<Line>();
 		for (Line line : linesToRemove) {

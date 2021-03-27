@@ -20,7 +20,7 @@ public class TetrisFrame extends JFrame {
 		// Obviously we do not want other people to mess with our sizing!!!
 		setResizable(false);
 		// After setting it all up, now we show it!
-		setVisible(true);
+//		setVisible(true);
 	}
 	
 }

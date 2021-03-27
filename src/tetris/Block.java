@@ -9,8 +9,8 @@ public class Block {
 	
 	Color blockColor;
 	
-	static final int BLOCKHEIGHT = 20;
-	static final int BLOCKWIDTH = 20;
+	static final int BLOCKHEIGHT = 50;
+	static final int BLOCKWIDTH = 50;
 	
 	int x, y;
 
