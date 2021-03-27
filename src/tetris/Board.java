@@ -109,7 +109,11 @@ public class Board extends JPanel implements ActionListener, BlockBlueprints {
 			linesToMoveDown.addAll(linesAbove(line.getY()));
 		}
 		
-		linesToMoveDown.forEach((n) -> n.moveDown());
+		linesToMoveDown.forEach((line) -> line.moveDown());
+		
+		if (!linesAbove(0).isEmpty()) {
+			System.out.println("You lose sucker");
+		}
 	}
 	
 	private ArrayList<Line> linesAbove(int yCoord) {

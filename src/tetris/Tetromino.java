@@ -225,7 +225,7 @@ public class Tetromino {
 	
 	private void createPiece(String blueprint) {
 		int startingX = (int) (Math.round((Board.PANELWIDTH/2)/Block.BLOCKWIDTH) * Block.BLOCKWIDTH - (Block.BLOCKWIDTH*2));
-		int x = startingX, y = -80;
+		int x = startingX, y = -Block.BLOCKHEIGHT*4;
 		for (int i = 0; i < blueprint.length(); i++){
 		    char blueprintCharacter = blueprint.charAt(i);   
 		    switch (blueprintCharacter) {
