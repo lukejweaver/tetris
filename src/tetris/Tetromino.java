@@ -34,7 +34,7 @@ public class Tetromino {
 	
 	Color tetrominoColor;
 	
-	int x = 140, y = -80, width = 80, height = 80, dropSpeed = 10, currentLoop = 0;
+	int x = 140, y = -80, width = 80, height = 80, dropSpeed = 10, currentLoop = 0, blockContact = 0;
 		
 	public Tetromino(String blueprint) {
 		createPiece(blueprint);
@@ -54,8 +54,12 @@ public class Tetromino {
 				}
 			}
 		}
-		
-		return isAtBottom || isBlockBelow;
+		if (isAtBottom || isBlockBelow) {
+			blockContact += 1;
+		} else {
+			blockContact = 0;
+		}
+		return blockContact == 50;
 	}
 	
 	public void moveDown(ArrayList<Block> placedBlocks) {
